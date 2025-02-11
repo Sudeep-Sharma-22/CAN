@@ -18,10 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "string.h"
+
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,13 +59,23 @@ static void MX_FDCAN1_Init(void);
 /* USER CODE BEGIN 0 */
 
 FDCAN_TxHeaderTypeDef TxHeader;
-//FDCAN_RxHeaderTypeDef RxHeader;
+FDCAN_RxHeaderTypeDef RxHeader;
 
-uint8_t TxData[8];
+char TxData[8];
 //char TxData[]="IGVC!";
 uint8_t RxData[8];
-//uint8_t datatobesent[1024];
-//int k=0;
+char datatobesent[1024]="verGonnaMakeYouCryNeverGonnaSayGoodByeNeverGonnaTellALieAndHurtYou";
+uint8_t k=0;
+
+void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
+{
+	if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET)
+	{
+		if(HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)Error_Handler();
+		if(HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0)!= HAL_OK)Error_Handler();
+
+	}
+}
 
 //uint32_t TxMailbox;
 
@@ -104,6 +115,8 @@ int main(void)
 
   if(HAL_FDCAN_Start(&hfdcan1)!= HAL_OK)Error_Handler();
 
+  if(HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0)!= HAL_OK)Error_Handler();
+
     TxHeader.BitRateSwitch = FDCAN_BRS_OFF;
     TxHeader.DataLength=FDCAN_DLC_BYTES_8;
     TxHeader.ErrorStateIndicator=FDCAN_ESI_ACTIVE;
@@ -114,8 +127,8 @@ int main(void)
     TxHeader.TxEventFifoControl=FDCAN_NO_TX_EVENTS;
     TxHeader.TxFrameType=FDCAN_DATA_FRAME;
 
-  for(int i = 0;i<8;i++)
-	  TxData[i]=i+1;
+//  for(int i = 0;i<8;i++)
+//	  TxData[i]=i+1;
 
 //strcpy(datatobesent,"NeverGonnaGiveYouUpNeverGonnaLetYouDownNeverGonnaRunAroundAndDesertYou");
   /* USER CODE END 2 */
@@ -125,18 +138,18 @@ int main(void)
   while (1)
   {
 
-	  for(int i = 0;i<8;i++){
-		  TxData[i]=(TxData[i]+1)%8;
-	  }
-//	  for(int i =0;i<8;i++){
-//		  TxData[i]=datatobesent[k];
-//		  k=(k+1)%(strlen(datatobesent));
+//	  for(int i = 0;i<8;i++){
+//		  TxData[i]=(TxData[i]+1)%8;
 //	  }
+	  for(int i =0;i<8;i++){
+		  TxData[i]=datatobesent[k];
+		  k=(k+1)%(strlen(datatobesent));
+	  }
 
 	  if(HAL_FDCAN_AddMessageToTxFifoQ(&hfdcan1, &TxHeader,TxData)!= HAL_OK)Error_Handler();
-	  HAL_Delay(500);
+	  HAL_Delay(3000);
 
-		  /* USER CODE END WHILE */
+    /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
@@ -227,6 +240,15 @@ static void MX_FDCAN1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN FDCAN1_Init 2 */
+
+  FDCAN_FilterTypeDef canfilterconfig;
+
+  canfilterconfig.FilterConfig = FDCAN_FILTER_DISABLE;
+//  canfilterconfig.FilterID1
+//  canfilterconfig.FilterID2
+//  canfilterconfig.FilterIndex
+//  canfilterconfig.FilterType
+//  canfilterconfig.IdType
 
   /* USER CODE END FDCAN1_Init 2 */
 

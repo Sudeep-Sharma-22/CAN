@@ -1,10 +1,10 @@
-12:54:00 **** Incremental Build of configuration Debug for project CAN_Bluepill ****
+22:23:40 **** Incremental Build of configuration Debug for project CAN_Bluepill ****
 make -j16 all 
 arm-none-eabi-size  CAN_Bluepill.elf 
    text	   data	    bss	    dec	    hex	filename
-   7680	     20	   1644	   9344	   2480	CAN_Bluepill.elf
+  33600	    392	   6280	  40272	   9d50	CAN_Bluepill.elf
 Finished building: default.size.stdout
  
 
-12:54:00 Build Finished. 0 errors, 0 warnings. (took 497ms)
+22:23:41 Build Finished. 0 errors, 0 warnings. (took 301ms)
 

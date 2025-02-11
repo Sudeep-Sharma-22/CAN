@@ -1,0 +1,10 @@
+21:55:32 **** Incremental Build of configuration Debug for project usbcdcbluepill ****
+make -j16 all 
+arm-none-eabi-size  usbcdcbluepill.elf 
+   text	   data	    bss	    dec	    hex	filename
+  29500	    392	   6176	  36068	   8ce4	usbcdcbluepill.elf
+Finished building: default.size.stdout
+ 
+
+21:55:32 Build Finished. 0 errors, 0 warnings. (took 297ms)
+
